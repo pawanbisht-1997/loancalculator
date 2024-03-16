@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .tab {
+            overflow: hidden;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .tab button {
+    background-color: #414141;
+    color: white;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 17px 20px;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+        .tab button:hover {
+            background-color: #638fef;
+        }
+
+        .tab button.active {
+            background-color: #638fef;
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 20px;
+        }
+
+        input[type="number"],
+        input[type="range"] {
+            width: calc(100% - 20px);
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button.calculate-btn {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button.calculate-btn:hover {
+            background-color: #005f78;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        .result{
+    font-size: 30px;
+    margin-top: 25px;
+    text-align: center;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">Financial Calculator</h1>
+        <div class="tab">
+            <button class="tablinks active" onclick="openCalculator(event, 'balanceTransfer')">Balance Transfer</button>
+            <button class="tablinks" onclick="openCalculator(event, 'partPayment')">Part Payment</button>
+            <button class="tablinks" onclick="openCalculator(event, 'emi')">EMI</button>
+            <button class="tablinks" onclick="openCalculator(event, 'homeLoan')">Home Loan EMI-SIP</button>
+        </div>
+        <div id="balanceTransfer" class="tabcontent" style="display: block;">
+            <h2>Balance Transfer Calculator</h2>
+            <label for="currentBalance">Current Balance (INR):</label>
+            <input type="number" id="currentBalance" min="1000" max="10000000" step="1000" value="50000"><br>
+            <label for="interestRate">Current Interest Rate (%):</label>
+            <input type="number" id="interestRate" min="0" max="100" step="0.1" value="18"><br>
+            <label for="newInterestRate">Balance Transfer Interest Rate (%):</label>
+            <input type="number" id="newInterestRate" min="0" max="100" step="0.1" value="10"><br>
+            <label for="transferFee">Transfer Fee (%):</label>
+            <input type="number" id="transferFee" min="0" max="5" step="0.1" value="3"><br>
+            <button class="calculate-btn" onclick="calculateTransferSavings()">Calculate Transfer Savings</button>
+            <div id="transferResult" class="result"></div>
+        </div>
+        <div id="partPayment" class="tabcontent">
+            <h2>Part Payment Calculator</h2>
+            <label for="currentBalancePP">Current Loan Amount (INR):</label>
+            <input type="number" id="currentBalancePP" min="1000" max="10000000" step="1000" value="50000"><br>
+            <label for="partPaymentInput">Part Payment Amount (INR):</label> <!-- Updated ID here -->
+            <input type="number" id="partPaymentInput" min="0" max="10000000" step="1000" value="0"><br> <!-- Updated ID here -->
+            <label for="interestRatePP">Interest Rate (%):</label>
+            <input type="number" id="interestRatePP" min="0" max="100" step="0.1" value="12"><br>
+            <button class="calculate-btn" onclick="calculatePartPayment()">Calculate Part Payment</button>
+            <div id="partPaymentResult" class="result"></div>
+        </div>
+        <div id="emi" class="tabcontent">
+            <h2>EMI Calculator</h2>
+            <label for="principal">Loan Amount (INR):</label>
+            <input type="number" id="principalEMI" min="1000" max="10000000" step="1000" value="100000"><br>
+            <label for="rate">Annual Interest Rate (%):</label>
+            <input type="number" id="rateEMI" min="0" max="100" step="0.1" value="8"><br>
+            <label for="time">Loan Term (Years):</label>
+            <input type="number" id="timeEMI" min="1" max="30" step="1" value="5"><br>
+            <button class="calculate-btn" onclick="calculateEMI()">Calculate EMI</button>
+            <div id="emiResult" class="result"></div>
+        </div>
+        <div id="homeLoan" class="tabcontent">
+            <h2>Home Loan EMI-SIP Calculator</h2>
+            <label for="loanAmount">Loan Amount (INR):</label>
+            <input type="number" id="loanAmountHL" min="1000" max="10000000" step="1000" value="500000"><br>
+            <label for="interestRate">Interest Rate (%):</label>
+            <input type="number" id="interestRateHL" min="0" max="100" step="0.1" value="8"><br>
+            <label for="loanTenure">Loan Tenure (Years):</label>
+            <input type="number" id="loanTenureHL" min="1" max="30" step="1" value="15"><br>
+            <button class="calculate-btn" onclick="calculateHomeLoanEMI()">Calculate EMI</button>
+            <div id="homeLoanResult" class="result"></div>
+        </div>
+    </div>
+    <script>
+        function openCalculator(evt, calculatorName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(calculatorName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        document.getElementsByClassName("tablinks")[0].click();
+    
+        function calculateTransferSavings() {
+            var currentBalance = parseFloat(document.getElementById("currentBalance").value);
+            var interestRate = parseFloat(document.getElementById("interestRate").value);
+            var newInterestRate = parseFloat(document.getElementById("newInterestRate").value);
+            var transferFee = parseFloat(document.getElementById("transferFee").value);
+            var transferResult = document.getElementById("transferResult");
+            
+            // Calculation logic
+            var savings = (currentBalance * (interestRate - newInterestRate) / 100) - (currentBalance * (transferFee / 100));
+            transferResult.innerHTML = "Transfer savings: " + savings.toFixed(2) + " INR";
+        }
+    
+        function calculatePartPayment() {
+    var currentBalance = parseFloat(document.getElementById("currentBalancePP").value);
+    var partPayment = parseFloat(document.getElementById("partPaymentInput").value);
+    var interestRate = parseFloat(document.getElementById("interestRatePP").value);
+    var partPaymentResult = document.getElementById("partPaymentResult");
+
+    // Check input values
+    console.log("Current Balance:", currentBalance);
+    console.log("Part Payment:", partPayment);
+    console.log("Interest Rate:", interestRate);
+
+    // Check if inputs are valid numbers
+    if (isNaN(currentBalance) || isNaN(partPayment) || isNaN(interestRate)) {
+        partPaymentResult.innerHTML = "Please enter valid numbers.";
+        return; // Exit function early
+    }
+
+    // Calculation logic
+    var remainingBalance = currentBalance - partPayment;
+    var interestAmount = (remainingBalance * interestRate * 0.01);
+    var totalAmount = remainingBalance + interestAmount;
+    partPaymentResult.innerHTML = "Remaining balance after part payment: " + remainingBalance.toFixed(2) + " INR<br>" +
+        "Interest amount: " + interestAmount.toFixed(2) + " INR<br>" +
+        "Total amount payable: " + totalAmount.toFixed(2) + " INR";
+}
+        function calculateEMI() {
+            var principal = parseFloat(document.getElementById("principalEMI").value);
+            var rate = parseFloat(document.getElementById("rateEMI").value);
+            var time = parseFloat(document.getElementById("timeEMI").value);
+            var emiResult = document.getElementById("emiResult");
+            
+            // Calculation logic
+            var interestRate = rate / 12 / 100;
+            var numberOfPayments = time * 12;
+            var emi = (principal * interestRate * Math.pow(1 + interestRate, numberOfPayments)) / (Math.pow(1 + interestRate, numberOfPayments) - 1);
+            emiResult.innerHTML = "Monthly EMI: " + emi.toFixed(2) + " INR";
+        }
+    
+        function calculateHomeLoanEMI() {
+            var loanAmount = parseFloat(document.getElementById("loanAmountHL").value);
+            var interestRate = parseFloat(document.getElementById("interestRateHL").value);
+            var loanTenure = parseFloat(document.getElementById("loanTenureHL").value);
+            var homeLoanResult = document.getElementById("homeLoanResult");
+            
+            // Calculation logic
+            var interestRateMonthly = interestRate / 12 / 100;
+            var numberOfPayments = loanTenure * 12;
+            var emi = (loanAmount * interestRateMonthly * Math.pow(1 + interestRateMonthly, numberOfPayments)) / (Math.pow(1 + interestRateMonthly, numberOfPayments) - 1);
+            homeLoanResult.innerHTML = "Monthly EMI: " + emi.toFixed(2) + " INR";
+        }
+    </script>
+    
+</body>
+</html>
